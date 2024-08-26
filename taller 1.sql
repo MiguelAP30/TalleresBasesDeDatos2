@@ -32,9 +32,9 @@ insert into productos(codigo, nombre, stock, valor_unitario)values('1','pollo',5
 insert into productos(codigo, nombre, stock, valor_unitario)values('2','carne',50,20000);
 insert into productos(codigo, nombre, stock, valor_unitario)values('3','huevo',50,600);
 
-insert into pedidos( fecha, cantidad, valor_total, producto_id, cliente_id)values('2003-11-12','2','30000','1','1022322054');
-insert into pedidos( fecha, cantidad, valor_total, producto_id, cliente_id)values('2003-11-13','4','80000','2','1022322055');
-insert into pedidos( fecha, cantidad, valor_total, producto_id, cliente_id)values('2003-11-14','2','1200','3','1022322056');
+insert into pedidos( fecha, cantidad, valor_total, producto_id, cliente_id)values('2003-11-12',2,30000,'1','1022322054');
+insert into pedidos( fecha, cantidad, valor_total, producto_id, cliente_id)values('2003-11-13',4,80000,'2','1022322055');
+insert into pedidos( fecha, cantidad, valor_total, producto_id, cliente_id)values('2003-11-14',2,1200,'3','1022322056');
 
 update clientes set nombre = 'miguel angel perez clavijo' where identificacion = '1022322054';
 update clientes set edad = 22 where identificacion = '1022322055';
