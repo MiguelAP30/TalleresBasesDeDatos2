@@ -89,5 +89,3 @@ delete from productos where codigo = '1';
 delete from clientes where identificacion = '1022322054';
 
 rollback to savepoint punto_de_restauracion;
-
-commit;
