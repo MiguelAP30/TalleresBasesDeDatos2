@@ -20,31 +20,26 @@ public class Taller11_9 {
         try {
             Class.forName("org.postgresql.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "mitologia2003");
-            // TALLER 9
-            // Llamada al procedimiento generar_auditoria
-            CallableStatement taller5 = conexion.prepareCall("call taller5.generar_auditoria(?, ?)");
-            taller5.setDate(1, java.sql.Date.valueOf("2000-11-12"));
-            taller5.setDate(2, java.sql.Date.valueOf("2004-11-12"));
-            taller5.execute();
-            taller5.close();
-            // Llamada al procedimiento simular_ventas_mes
-            CallableStatement taller5ventas = conexion.prepareCall("call taller5.simular_ventas_mes()");
-            taller5ventas.execute();
-            taller5ventas.close();
 
-            // TALLER 6
-            // Llamada a la funcion transacciones_total_mes(date,int)
-            PreparedStatement taller6transaccionesmes = conexion.prepareStatement("SELECT taller6.transacciones_total_mes(?, ?)");
-            taller6transaccionesmes.setDate(1, java.sql.Date.valueOf("2024-09-01"));
-            taller6transaccionesmes.setInt(2, 11);
-            ResultSet resultado = taller6transaccionesmes.executeQuery();
-            BigDecimal valor = new BigDecimal(0);
+            PreparedStatement setSchema = conexion.prepareStatement("SET search_path TO taller9");
+            setSchema.execute();
+            // TALLER 9
+            // Llamada a la funcion obtener_nomina_empleado(p_empleado_id INTEGER, p_mes INTEGER, p_anio INTEGER)
+            PreparedStatement taller9obtenernomina = conexion.prepareStatement("SELECT * FROM taller9.obtener_nomina_empleado(?, ?, ?)");
+            taller9obtenernomina.setInt(1, 32);
+            taller9obtenernomina.setInt(2, 1);
+            taller9obtenernomina.setInt(3, 2021);
+            ResultSet resultado = taller9obtenernomina.executeQuery();
             while (resultado.next()) {
-                valor = resultado.getBigDecimal(1);
+                String nombre = resultado.getString("nombre");
+                BigDecimal totalDevengado = resultado.getBigDecimal("total_devengado");
+                BigDecimal totalDeducciones = resultado.getBigDecimal("total_deducciones");
+                BigDecimal total = resultado.getBigDecimal("total");
+                System.out.println("Nombre: " + nombre + ", Total Devengado: " + totalDevengado + ", Total Deducciones: " + totalDeducciones + ", Total: " + total);
             }
-            System.out.println("El valor total de las transacciones del mes es: " + valor);
+
             resultado.close();
-            taller6transaccionesmes.close();
+            taller9obtenernomina.close();
             
             conexion.close();
         } catch (Exception e) {
