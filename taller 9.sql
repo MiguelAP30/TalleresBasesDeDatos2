@@ -1,16 +1,3 @@
-create table empleados(
-identificacion serial primary key,
-nombre varchar(50) not null,
-tipo_contrato_id varchar(20) not null,
-foreign key(tipo_contrato_id) references tipo_contrato(codigo)
-);
-
-create table tipo_contrato(
-codigo serial primary key,
-cargo varchar(20) not null,
-salario_total numeric not null
-);
-
 create type nombre_concepto as enum('salario','horas_extra','prestaciones','impuestos');
 
 create table conceptos(
@@ -19,13 +6,17 @@ nombre nombre_concepto not null,
 porcentaje numeric not null
 );
 
-CREATE TABLE detalles_nomina(
+create table tipo_contrato(
 codigo serial primary key,
-valor numeric not null,
-concepto_id integer,
-nomina_id integer,
-foreign key(concepto_id) references conceptos(codigo),
-foreign key(nomina_id) references nomina(codigo)
+cargo varchar(20) not null,
+salario_total numeric not null
+);
+
+create table empleados(
+identificacion serial primary key,
+nombre varchar(50) not null,
+tipo_contrato_id INTEGER not null,
+foreign key(tipo_contrato_id) references tipo_contrato(codigo)
 );
 
 CREATE TABLE nomina(
@@ -40,73 +31,119 @@ empleado_id integer,
 foreign key(empleado_id) references empleados(identificacion)
 );
 
+CREATE TABLE detalles_nomina(
+codigo serial primary key,
+valor numeric not null,
+concepto_id integer,
+nomina_id integer,
+foreign key(concepto_id) references conceptos(codigo),
+foreign key(nomina_id) references nomina(codigo)
+);
+
+
+
 --Parte 1
 -- poblar bd con 10 empleados, 10 tipo_contrato, 15 conceptos, 5 nomina y 15 detalles_nomina
+
+INSERT INTO tipo_contrato (codigo, cargo, salario_total) VALUES 
+(111, 'Cargo1', 1000), 
+(112, 'Cargo2', 2000), 
+(113, 'Cargo3', 3000), 
+(114, 'Cargo4', 4000), 
+(115, 'Cargo5', 5000);
 
 CREATE OR REPLACE PROCEDURE poblar_bd()
 LANGUAGE plpgsql
 AS $$
 DECLARE 
     v_empleados INTEGER := 1;
-    v_tipo_contrato INTEGER := 1;
+    v_tipo_contrato_id INTEGER;  
     v_conceptos INTEGER := 1;
     v_nomina INTEGER := 1;
-    v_detalles_nomina INTEGER := 1;
-    v_salario_total NUMERIC := 1000;
+    v_detalles_nomina INTEGER;
     v_porcentaje NUMERIC := 0.1;
     v_mes INTEGER := 1;
     v_anio INTEGER := 2021;
-    v_total_devengado NUMERIC;
-    v_total_deducciones NUMERIC;
-    v_total NUMERIC;
     v_empleado_id INTEGER;
-    v_tipo_contrato_id INTEGER;
     v_concepto_id INTEGER;
     v_nomina_id INTEGER;
 BEGIN
-    WHILE v_empleados <= 10 LOOP
+    RAISE NOTICE 'Iniciando inserción de empleados...';
+    -- Insertar empleados después de insertar tipos de contrato
+    v_empleados := 1;
+    FOR v_tipo_contrato_id IN SELECT codigo FROM tipo_contrato LOOP  
         INSERT INTO empleados(nombre, tipo_contrato_id)
-        VALUES('Empleado' || v_empleados, v_tipo_contrato)
+        VALUES('Empleado ' || v_empleados, v_tipo_contrato_id)
         RETURNING identificacion INTO v_empleado_id;
 
+        RAISE NOTICE 'Insertado empleado: % con tipo_contrato_id: %', v_empleado_id, v_tipo_contrato_id;
+
         v_empleados := v_empleados + 1;
-        v_tipo_contrato := v_tipo_contrato + 1;
     END LOOP;
 
-    WHILE v_tipo_contrato <= 10 LOOP
-        INSERT INTO tipo_contrato(cargo, salario_total)
-        VALUES('Cargo' || v_tipo_contrato, v_salario_total);
-
-        v_tipo_contrato := v_tipo_contrato + 1;
-        v_salario_total := v_salario_total + 1000;
-    END LOOP;
-
-    WHILE v_conceptos <= 15 LOOP
-        INSERT INTO conceptos(nombre, porcentaje)
-        VALUES('Concepto' || v_conceptos, v_porcentaje);
+    -- Insertar conceptos
+    RAISE NOTICE 'Iniciando inserción de conceptos...';
+    v_conceptos := 1;
+    WHILE v_conceptos <= 4 LOOP
+        CASE v_conceptos
+            WHEN 1 THEN
+                INSERT INTO conceptos(nombre, porcentaje)
+                VALUES('salario', v_porcentaje);
+            WHEN 2 THEN
+                INSERT INTO conceptos(nombre, porcentaje)
+                VALUES('horas_extra', v_porcentaje);
+            WHEN 3 THEN
+                INSERT INTO conceptos(nombre, porcentaje)
+                VALUES('prestaciones', v_porcentaje);
+            WHEN 4 THEN
+                INSERT INTO conceptos(nombre, porcentaje)
+                VALUES('impuestos', v_porcentaje);
+        END CASE;
 
         v_conceptos := v_conceptos + 1;
         v_porcentaje := v_porcentaje + 0.1;
     END LOOP;
 
-    WHILE v_nomina <= 5 LOOP
+    -- Insertar nóminas y detalles de nómina
+    RAISE NOTICE 'Iniciando inserción de nóminas...';
+    v_nomina := 1;
+    FOR v_empleado_id IN SELECT identificacion FROM empleados LOOP
+        -- Insertar nómina
         INSERT INTO nomina(mes, anio, fecha_pago, total_devengado, total_deducciones, total, empleado_id)
-        VALUES(v_mes, v_anio, '2021-01-01', 1000, 100, 900, v_nomina)
+        VALUES(v_mes, v_anio, '2021-01-01', 1000, 100, 900, v_empleado_id)
         RETURNING codigo INTO v_nomina_id;
+
+        RAISE NOTICE 'Insertada nómina para empleado_id: % con nómina_id: %', v_empleado_id, v_nomina_id;
+
+        -- Insertar detalles de nómina
+        v_detalles_nomina := 1;
+        FOR v_concepto_id IN SELECT codigo FROM conceptos LOOP
+            INSERT INTO detalles_nomina(valor, concepto_id, nomina_id)
+            VALUES(100, v_concepto_id, v_nomina_id);
+
+            RAISE NOTICE 'Insertado detalle_nomina con concepto_id: % y nomina_id: %', v_concepto_id, v_nomina_id;
+
+            v_detalles_nomina := v_detalles_nomina + 1;
+
+            -- Salir si ya insertaste 15 detalles (aunque debería ser 4 conceptos)
+            IF v_detalles_nomina > 15 THEN
+                EXIT;
+            END IF;
+        END LOOP;
 
         v_nomina := v_nomina + 1;
         v_mes := v_mes + 1;
+
+        -- Salir si ya insertaste 5 nóminas
+        IF v_nomina > 5 THEN
+            EXIT;
+        END IF;
     END LOOP;
 
-    WHILE v_detalles_nomina <= 15 LOOP
-        INSERT INTO detalles_nomina(valor, concepto_id, nomina_id)
-        VALUES(100, v_concepto_id, v_nomina_id);
-
-        v_detalles_nomina := v_detalles_nomina + 1;
-        v_concepto_id := v_concepto_id + 1;
-    END LOOP;
+    RAISE NOTICE 'Población de la base de datos completada.';
 END;
 $$;
+
 
 CALL poblar_bd();
 
@@ -132,7 +169,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT * FROM obtener_nomina_empleado(1, 1, 2021);
+SELECT * FROM obtener_nomina_empleado(32, 1, 2021);
 
 -- crear una funcion total_por_contrato que reciba el tipo de contrato y retorne el nombre del empleado, fecha de pago, año, mes, total devengado, total deducciones y total de la nomina
 
@@ -156,5 +193,5 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT * FROM total_por_contrato(1);
+SELECT * FROM total_por_contrato(111);
 
