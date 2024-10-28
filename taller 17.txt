@@ -1,0 +1,68 @@
+[
+  { "ISBN": 1, "Titulo": "Cien Años de Soledad", "NombreAutor": "Gabriel García Márquez", "Genero": "Ficción", "Año": 1967 },
+  { "ISBN": 2, "Titulo": "Don Quijote de la Mancha", "NombreAutor": "Miguel de Cervantes", "Genero": "Clásico", "Año": 1605 },
+  { "ISBN": 3, "Titulo": "El Principito", "NombreAutor": "Antoine de Saint-Exupéry", "Genero": "Fábula", "Año": 1945 },
+  { "ISBN": 4, "Titulo": "1984", "NombreAutor": "George Orwell", "Genero": "Ciencia Ficción Distópica", "Año": 1949 },
+  { "ISBN": 5, "Titulo": "Crimen y Castigo", "NombreAutor": "Fiódor Dostoyevski", "Genero": "Filosofía", "Año": 1866 },
+  { "ISBN": 6, "Titulo": "Matar a un Ruiseñor", "NombreAutor": "Harper Lee", "Genero": "Drama", "Año": 1960 },
+  { "ISBN": 7, "Titulo": "Orgullo y Prejuicio", "NombreAutor": "Jane Austen", "Genero": "Romántico", "Año": 1813 },
+  { "ISBN": 8, "Titulo": "El Gran Gatsby", "NombreAutor": "Francis Scott Fitzgerald", "Genero": "Ficción", "Año": 1925 },
+  { "ISBN": 9, "Titulo": "El Señor de los Anillos", "NombreAutor": "J.R.R. Tolkien", "Genero": "Fantasía Épica", "Año": 1954 },
+  { "ISBN": 10, "Titulo": "Harry Potter y la Piedra Filosofal", "NombreAutor": "J.K. Rowling", "Genero": "Fantasía Épica", "Año": 1997 },
+  { "ISBN": 11, "Titulo": "Los Miserables", "NombreAutor": "Victor Hugo", "Genero": "Drama", "Año": 1862 },
+  { "ISBN": 12, "Titulo": "Fahrenheit 451", "NombreAutor": "Ray Bradbury", "Genero": "Ciencia Ficción", "Año": 1953 },
+  { "ISBN": 13, "Titulo": "Ulises", "NombreAutor": "James Joyce", "Genero": "Experimental", "Año": 1922 },
+  { "ISBN": 14, "Titulo": "En Busca del Tiempo Perdido", "NombreAutor": "Marcel Proust", "Genero": "Filosofía", "Año": 1913 },
+  { "ISBN": 15, "Titulo": "La Odisea", "NombreAutor": "Homero", "Genero": "Épico", "Año": -800 },
+  { "ISBN": 16, "Titulo": "La Ilíada", "NombreAutor": "Homero", "Genero": "Épico", "Año": -760 },
+  { "ISBN": 17, "Titulo": "El Hobbit", "NombreAutor": "J.R.R. Tolkien", "Genero": "Fantasía Épica", "Año": 1937 },
+  { "ISBN": 18, "Titulo": "El Nombre del Viento", "NombreAutor": "Patrick Rothfuss", "Genero": "Fantasía Épica", "Año": 2007 },
+  { "ISBN": 19, "Titulo": "Los Juegos del Hambre", "NombreAutor": "Suzanne Collins", "Genero": "Ciencia Ficción Distópica", "Año": 2008 },
+  { "ISBN": 20, "Titulo": "La Metamorfosis", "NombreAutor": "Franz Kafka", "Genero": "Existencialismo", "Año": 1915 }
+]
+
+{
+  "filter": { "Genero": "Fantasía" },
+  "update": { "$set": { "Genero": "Fantasía Épica" } }
+}
+{
+  "filter": { "Titulo": "El Principito" },
+  "update": { "$set": { "Año": 2000 } }
+}
+{
+  "filter": { "Titulo": "El Gran Gatsby" },
+  "update": { "$set": { "NombreAutor": "Miguel" } }
+}
+{
+  "filter": { "Genero": "Distopía" },
+  "update": { "$set": { "Genero": "Fantasía" } }
+}
+
+{
+  "Año": { "$gt": 1950 }
+}
+
+{
+  "Año": { "$lt": 1900 }
+}
+
+{
+  "Genero": { "$in": ["Fantasía", "Distopía"] }
+}
+
+{
+  "Año": { "$gte": 1800, "$lte": 1950 }
+}
+
+{
+  "NombreAutor": "J.R.R. Tolkien"
+}
+
+{
+  "Genero": "Fantasía",
+  "Año": { "$gt": 2000 }
+}
+
+{
+  "Genero": { "$ne": "Fantasía" }
+}
