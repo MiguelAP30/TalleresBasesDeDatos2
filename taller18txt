@@ -1,0 +1,66 @@
+[
+    { "ISBN": "978-3-16-148410-1", "Titulo": "La Divina Comedia", "AutorID": 1, "GeneroID": 1 },
+    { "ISBN": "978-0-123-45678-0", "Titulo": "El Gran Gatsby", "AutorID": 2, "GeneroID": 2 },
+    { "ISBN": "978-1-234-56789-8", "Titulo": "Fahrenheit 451", "AutorID": 3, "GeneroID": 3 },
+    { "ISBN": "978-0-765-43210-4", "Titulo": "El Retrato de Dorian Gray", "AutorID": 4, "GeneroID": 4 },
+    { "ISBN": "978-1-852-44567-5", "Titulo": "Moby Dick", "AutorID": 5, "GeneroID": 5 },
+    { "ISBN": "978-3-111-11111-6", "Titulo": "Alicia en el País de las Maravillas", "AutorID": 6, "GeneroID": 1 },
+    { "ISBN": "978-0-999-99999-2", "Titulo": "El Conde de Montecristo", "AutorID": 7, "GeneroID": 2 },
+    { "ISBN": "978-1-222-22222-9", "Titulo": "Drácula", "AutorID": 8, "GeneroID": 3 },
+    { "ISBN": "978-1-333-33333-5", "Titulo": "Frankenstein", "AutorID": 9, "GeneroID": 4 },
+    { "ISBN": "978-1-444-44444-1", "Titulo": "La Ilíada", "AutorID": 10, "GeneroID": 5 }
+]
+
+[
+    { "AutorID": 1, "Nombre": "Dante Alighieri", "Nacionalidad": "Italiana" },
+    { "AutorID": 2, "Nombre": "F. Scott Fitzgerald", "Nacionalidad": "Estadounidense" },
+    { "AutorID": 3, "Nombre": "Ray Bradbury", "Nacionalidad": "Estadounidense" },
+    { "AutorID": 4, "Nombre": "Oscar Wilde", "Nacionalidad": "Irlandesa" },
+    { "AutorID": 5, "Nombre": "Herman Melville", "Nacionalidad": "Estadounidense" },
+    { "AutorID": 6, "Nombre": "Lewis Carroll", "Nacionalidad": "Británica" },
+    { "AutorID": 7, "Nombre": "Alexandre Dumas", "Nacionalidad": "Francesa" },
+    { "AutorID": 8, "Nombre": "Bram Stoker", "Nacionalidad": "Irlandesa" },
+    { "AutorID": 9, "Nombre": "Mary Shelley", "Nacionalidad": "Británica" },
+    { "AutorID": 10, "Nombre": "Homero", "Nacionalidad": "Griega" }
+]
+  
+[
+    { "GeneroID": 1, "NombreGenero": "Poesía" },
+    { "GeneroID": 2, "NombreGenero": "Novela" },
+    { "GeneroID": 3, "NombreGenero": "Ciencia Ficción" },
+    { "GeneroID": 4, "NombreGenero": "Fantasía" },
+    { "GeneroID": 5, "NombreGenero": "Épica" },
+    { "GeneroID": 6, "NombreGenero": "Aventura" },
+    { "GeneroID": 7, "NombreGenero": "Horror" },
+    { "GeneroID": 8, "NombreGenero": "Misterio" },
+    { "GeneroID": 9, "NombreGenero": "Clásico" },
+    { "GeneroID": 10, "NombreGenero": "Ensayo" }
+]
+
+$lookup: {
+    from: "autores",
+    localField: "AutorID",
+    foreignField: "AutorID",
+    as: "Autor"
+}
+
+lookup: {
+    from: "generos",
+    localField: "GeneroID",
+    foreignField: "GeneroID",
+    as: "Genero"
+}
+
+$lookup: {
+    from: "autores",
+    localField: "AutorID",
+    foreignField: "AutorID",
+    as: "Autor"
+}
+
+$lookup: {
+    from: "generos",
+    localField: "GeneroID",
+    foreignField: "GeneroID",
+    as: "Genero"
+}
